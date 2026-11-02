@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+{% block title %}{{ page_title }} — {{ SITE_NAME }}{% endblock %}
+{% block content %}
+<section class="page-pad"><div class="wrap news-page">
+  <h1>{{ page_title }}</h1>
+  <form method="post" enctype="multipart/form-data" class="card news-form" style="margin-top:24px">
+    {% csrf_token %}
+    {% for field in form %}{% if field.name != "images" %}<p>{{ field.label_tag }}{{ field }}{% for error in field.errors %}<span class="err">{{ error }}</span>{% endfor %}</p>{% endif %}{% endfor %}
+    <div class="news-photo-editor" data-photo-editor>
+      <label class="news-dropzone" for="{{ form.images.id_for_label }}"><strong>Перетащите фотографии сюда</strong><span>или нажмите, чтобы выбрать. Фото можно не добавлять.</span>{{ form.images }}</label>
+      {% for error in form.images.errors %}<p class="err">{{ error }}</p>{% endfor %}
+      <input type="hidden" name="photo_order" data-photo-order value="{% if news %}{% for photo in news.images.all %}{% if not forloop.first %},{% endif %}id:{{ photo.pk }}{% endfor %}{% endif %}">
+      <div class="news-photo-previews" data-photo-previews>
+        {% if news %}{% for photo in news.images.all %}<div class="news-photo-thumb" draggable="true" data-photo-id="{{ photo.pk }}"><img src="{{ photo.image.url }}" alt="Прикреплённое фото"><button type="button" aria-label="Удалить фото" data-remove-photo>×</button><small>Перетащите, чтобы изменить порядок</small></div>{% endfor %}{% endif %}
+      </div>
+    </div>
+    <div class="news-actions"><button class="btn" type="submit">Сохранить</button><a class="btn btn-ghost" href="{% url 'news_manage' %}">Отмена</a></div>
+  </form>
+</div></section>
+{% endblock %}

@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+{% block title %}Уведомления — {{ SITE_NAME }}{% endblock %}
+{% block content %}
+<div class="wrap page-pad" style="padding-bottom:64px;max-width:820px">
+  <div class="toolbar">
+    <h1 style="font-size:clamp(1.9rem,4vw,2.8rem)">Уведомления</h1>
+    {% if unread_count %}<form method="post" action="{% url 'notifications_read_all' %}">{% csrf_token %}<button class="btn btn-ghost btn-sm">Прочитать все</button></form>{% endif %}
+  </div>
+  {% for n in items %}
+  <div class="note {% if not n.is_read %}unread{% endif %}">
+    <span class="n-ico" aria-hidden="true">{% if n.kind == 'mention' %}💬{% elif n.kind == 'deadline' %}⏰{% elif n.kind == 'birthday' %}🎂{% elif n.kind == 'task' %}✅{% else %}🔔{% endif %}</span>
+    <a class="note-link" href="{% url 'notification_go' n.pk %}"><b>{{ n.title }}</b>{% if n.text %}<div>{{ n.text }}</div>{% endif %}<small>{{ n.created_at|date:"j E, H:i" }}</small></a>
+    <form method="post" action="{% url 'notification_delete' n.pk %}" onsubmit="return confirm('Удалить это уведомление?')">{% csrf_token %}<button class="btn btn-ghost btn-sm" type="submit">Удалить</button></form>
+  </div>
+  {% empty %}
+  <div class="card empty"><h3>Новых уведомлений нет</h3><p>Здесь появятся отметки в чатах, дедлайны и дни рождения.</p></div>
+  {% endfor %}
+</div>
+{% endblock %}

@@ -1,0 +1,55 @@
+{% extends "core/sub_base.html" %} 
+{% load core_extras %} 
+{% block sub_content %}
+<div class="toolbar">
+  <div class="tabs">
+    <a class="tab {% if not mine %}on{% endif %}" href="{% url 'sub_tasks' sub.pk %}">Все задачи</a>
+    <a class="tab {% if mine %}on{% endif %}" href="{% url 'sub_tasks' sub.pk %}?mine=1">Мои</a>
+  </div>
+  {% if can_manage %}<a class="btn btn-mint" href="{% url 'task_new' sub.pk %}">Новая задача</a>{% endif %}
+</div>
+
+{% for t in tasks %}
+<article class="card task {% if t.done %}done{% endif %}" id="task-{{ t.pk }}">
+  <div class="task-top">
+    <h3 class="task-title">{{ t.title }}</h3>
+    {% with di=t.deadline_info %}
+      {% if t.done %}<span class="pill">Выполнено</span>{% elif di %}<span class="pill {{ di.1 }}">{{ di.0 }}</span>{% endif %}
+    {% endwith %}
+  </div>
+  <div class="people">
+    {% for a in t.assignees.all %}<span><img src="{{ a|pavatar }}" alt="">{{ a|pname }}</span>{% empty %}<span>Ответственный не назначен</span>{% endfor %}
+  </div>
+  {% if t.description %}<p>{{ t.description|linebreaksbr }}</p>{% endif %}
+  {% if t.image %}<a href="{{ t.image.url }}" target="_blank" rel="noopener"><img class="task-img" src="{{ t.image.url }}" alt="Фото к задаче" loading="lazy"></a>{% endif %}
+
+  {% if t.sub_total %}
+  <div>
+    {% for s in t.subtasks.all %}
+      <label class="sub {% if s.done %}done{% endif %}">
+        <input type="checkbox" {% if s.done %}checked{% endif %} {% if t.can_tick %}data-sub-url="{% url 'toggle_subtask' t.pk s.pk %}"{% else %}disabled{% endif %}>
+        <span>{{ s.text }}</span>
+      </label>
+    {% endfor %}
+  </div>
+  <div class="progress"><div class="bar"><i style="width:{{ t.percent }}%"></i></div><span class="count">{{ t.sub_done }} из {{ t.sub_total }}</span></div>
+  {% endif %}
+
+  {% if not t.sub_total and t.can_tick or can_manage %}
+  <div class="task-foot">
+    {% if not t.sub_total and t.can_tick %}
+      <button type="button" class="btn btn-mint btn-sm" data-done-url="{% url 'toggle_task' t.pk %}">{% if t.done %}Вернуть в работу{% else %}Отметить выполненной{% endif %}</button>
+    {% endif %}
+    {% if can_manage %}
+      <form method="post" action="{% url 'delete_task' t.pk %}" onsubmit="return confirm('Удалить задачу?')">{% csrf_token %}<button class="btn btn-danger btn-sm">Удалить</button></form>
+    {% endif %}
+  </div>
+  {% endif %}
+</article>
+{% empty %}
+<div class="card empty">
+  <h3>{% if mine %}На вас пока нет задач{% else %}Задач пока нет{% endif %}</h3>
+  <p>{% if can_manage %}Создайте первую задачу и назначьте ответственных.{% else %}Когда руководитель назначит задачу, она появится здесь.{% endif %}</p>
+</div>
+{% endfor %}
+{% endblock %}

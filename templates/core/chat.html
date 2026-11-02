@@ -1,0 +1,27 @@
+{% extends "core/sub_base.html" %}
+{% block sub_content %}
+<section class="chat" id="chat" data-messages="{% url 'chat_messages' sub.pk %}" data-send="{% url 'chat_send' sub.pk %}" data-delete="{% url 'chat_messages' sub.pk %}" data-mute="{% url 'chat_mute' sub.pk %}">
+  <header class="chat-head">
+    <div><b>{% if sub.department.slug == "common" %}Общий чат{% else %}{{ sub.name }}{% endif %}</b><div class="help">Участников: {{ n_members }}. Упоминания: @ник, @все в чате или @все в отделе</div></div>
+    <div class="menu">
+      <button type="button" class="btn btn-ghost btn-sm" id="mute-btn">Заглушить чат</button>
+      <div class="menu-pop" id="mute-pop">
+        <button type="button" data-minutes="60">На 1 час</button>
+        <button type="button" data-minutes="480">На 8 часов</button>
+        <button type="button" data-minutes="4320">На 3 дня</button>
+        <button type="button" data-minutes="-1">Навсегда</button>
+        <button type="button" data-minutes="0">Включить звук</button>
+      </div>
+    </div>
+  </header>
+  <div class="chat-scroll" id="chat-scroll" aria-live="polite"></div>
+  <form class="composer" id="composer" autocomplete="off">
+    <div class="mention-list" id="mention-list"></div>
+    <textarea id="msg" rows="1" maxlength="2000" placeholder="Сообщение… Enter — отправить, Shift+Enter — новая строка" aria-label="Сообщение"></textarea>
+    <button class="send" type="submit" aria-label="Отправить">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 2L11 13"/><path d="M22 2l-7 20-4-9-9-4z"/></svg>
+    </button>
+  </form>
+</section>
+{{ cfg|json_script:"chat-cfg" }}
+{% endblock %}

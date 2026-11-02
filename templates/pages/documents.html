@@ -1,0 +1,10 @@
+{% extends "pages/public_base.html" %}
+{% load static %}
+{% block title %}Документы — {{ SITE_NAME }}{% endblock %}
+{% block public_content %}
+<section class="public-hero compact-hero"><p class="public-eyebrow">Открытая информация</p><h1>Документы<br><em>организации.</em></h1><p class="public-lead">Основные документы Центра и студенческой организации доступны для просмотра.</p></section>
+<section class="document-list">
+  <a class="document-row" href="{% static 'core/documents/ustav-ano-soziday.pdf' %}" target="_blank" rel="noopener"><span class="document-mark">PDF</span><span class="document-copy"><strong>Устав АНО МЦ СП «Созидай!»</strong><small>Устав автономной некоммерческой организации</small></span><span class="document-open" aria-hidden="true">↗</span></a>
+  <a class="document-row" href="{% static 'core/documents/polozhenie-studencheskoy-organizatsii.pdf' %}" target="_blank" rel="noopener"><span class="document-mark">PDF</span><span class="document-copy"><strong>Положение о студенческом клубе «Созидай!»</strong><small>Студенческая организация Финансового университета · 2025</small></span><span class="document-open" aria-hidden="true">↗</span></a>
+</section>
+{% endblock %}

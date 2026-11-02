@@ -1,0 +1,10 @@
+{% extends "pages/public_base.html" %}
+{% block title %}Результаты работы — {{ SITE_NAME }}{% endblock %}
+{% block public_content %}
+<section class="public-hero results-hero"><p class="public-eyebrow">Результаты работы Центра</p><div class="public-section-heading"><h1>Идеи, которые<br>стали <em>результатом.</em></h1><aside class="opening-note"><span>Центр открыт</span><strong>26 апреля 2024</strong><a href="https://t.me/KCVDNH/519" target="_blank" rel="noopener noreferrer">История нашего начала ↗</a></aside></div></section>
+<section class="results-grid" aria-label="Результаты Центра">
+  <article class="result-card result-funding"><p class="public-eyebrow">Призовые и грантовые средства</p><h2>5 422 751 <small>₽</small></h2><p class="result-description">Помогли выиграть авторам и командам социальных проектов.</p><div class="result-chart funding-chart" aria-label="Динамика призовых и грантовых средств"><div class="result-column"><strong>2 162 751</strong><i style="--bar:60px"></i><span>Май 2025</span></div><div class="result-column"><strong>3 312 751</strong><i style="--bar:92px"></i><span>Июнь 2026</span></div><div class="result-column is-latest"><strong>5 422 751</strong><i style="--bar:150px"></i><span>Октябрь 2026</span></div></div></article>
+  <article class="result-card"><h2>Проекты, разработанные при нашей поддержке</h2><div class="result-chart"><div class="result-column"><strong>20</strong><i style="--bar:94px"></i><span>Май 2025</span></div><div class="result-column is-latest"><strong>23</strong><i style="--bar:108px"></i><span>Июнь 2026</span></div></div></article>
+  <article class="result-card"><h2>Проведённые очные мероприятия</h2><div class="result-chart"><div class="result-column"><strong>26</strong><i style="--bar:88px"></i><span>Май 2025</span></div><div class="result-column is-latest"><strong>32</strong><i style="--bar:108px"></i><span>Июнь 2026</span></div></div></article>
+</section>
+{% endblock %}

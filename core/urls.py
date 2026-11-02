@@ -1,0 +1,53 @@
+from django.contrib.auth.views import LoginView, LogoutView
+from django.urls import path
+from django.views.generic import TemplateView
+
+from . import views
+from .forms import LoginForm
+
+urlpatterns = [
+    path("", views.home, name="home"),
+    path("about/", views.about, name="about"),
+    path("results/", views.results, name="results"),
+    path("organization/", views.organization, name="organization"),
+    path("documents/", views.documents, name="documents"),
+    path("contacts/", views.contacts, name="contacts"),
+    path("privacy/", views.privacy_policy, name="privacy_policy"),
+    path("personal-data-agreement/", views.personal_data_agreement, name="personal_data_agreement"),
+    path("my-tasks/", views.my_tasks, name="my_tasks"),
+    path("news/manage/", views.news_manage, name="news_manage"),
+    path("news/create/", views.news_create, name="news_create"),
+    path("news/<int:pk>/edit/", views.news_edit, name="news_edit"),
+    path("news/<int:pk>/delete/", views.news_delete, name="news_delete"),
+    path("news/<int:pk>/publish/", views.news_toggle_publish, name="news_toggle_publish"),
+    path("news/<int:pk>/", views.news_detail, name="news_detail"),
+    path("d/<slug:slug>/subdepartments/", views.department_subdepartments, name="department_subdepartments"),
+    path("d/<slug:slug>/subdepartments/new/", views.subdepartment_create, name="subdepartment_create"),
+    path("s/<int:pk>/edit/", views.subdepartment_edit, name="subdepartment_edit"),
+    path("s/<int:pk>/delete/", views.subdepartment_delete, name="subdepartment_delete"),
+    path("d/<slug:slug>/", views.department, name="department"),
+    path("s/<int:pk>/", views.sub_tasks, name="sub_start"),
+    path("s/<int:pk>/chat/", views.sub_chat, name="sub_chat"),
+    path("s/<int:pk>/tasks/", views.sub_tasks, name="sub_tasks"),
+    path("s/<int:pk>/tasks/new/", views.task_new, name="task_new"),
+    path("s/<int:pk>/birthdays/", views.sub_birthdays, name="sub_birthdays"),
+    path("s/<int:pk>/api/messages/", views.chat_messages, name="chat_messages"),
+    path("s/<int:pk>/api/send/", views.chat_send, name="chat_send"),
+    path("s/<int:pk>/api/messages/<int:mid>/delete/", views.chat_delete, name="chat_delete"),
+    path("s/<int:pk>/api/mute/", views.chat_mute, name="chat_mute"),
+    path("tasks/<int:pk>/sub/<int:sid>/toggle/", views.toggle_subtask, name="toggle_subtask"),
+    path("tasks/<int:pk>/toggle/", views.toggle_task, name="toggle_task"),
+    path("tasks/<int:pk>/delete/", views.delete_task, name="delete_task"),
+    path("notifications/", views.notifications, name="notifications"),
+    path("notifications/read-all/", views.notifications_read_all, name="notifications_read_all"),
+    path("notifications/<int:pk>/delete/", views.notification_delete, name="notification_delete"),
+    path("notifications/<int:pk>/go/", views.notification_go, name="notification_go"),
+    path("api/poll/", views.poll, name="poll"),
+    path("accounts/login/", LoginView.as_view(template_name="accounts/login.html", authentication_form=LoginForm,
+                                              redirect_authenticated_user=True), name="login"),
+    path("accounts/logout/", LogoutView.as_view(), name="logout"),
+    path("accounts/register/", views.register, name="register"),
+    path("profile/", views.profile, name="profile"),
+    path("agreement/", TemplateView.as_view(template_name="agreement.html"), name="agreement"),
+    path("sw.js", views.service_worker, name="sw"),
+]

@@ -1,0 +1,11 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %}Мои задачи — {{ SITE_NAME }}{% endblock %}
+{% block page_styles %}<link rel="stylesheet" href="{% static 'core/css/public-pages.css' %}?v=1">{% endblock %}
+{% block content %}<div class="public-page my-tasks-page">
+  <section class="public-hero compact-hero"><p class="public-eyebrow">Ваш план работы</p><h1>Мои <em>задачи.</em></h1><p class="public-lead">Сначала ближайшие сроки. Активных задач: {{ open_count }}.</p></section>
+  <section class="my-task-list" aria-label="Мои задачи">
+    {% for task in tasks %}<article class="my-task-card{% if task.done %} is-done{% endif %}"><div class="my-task-top"><div><span class="task-unit">{{ task.subdepartment.department.name }}</span><span class="task-subunit">{{ task.subdepartment.name }}</span></div><span class="task-deadline{% if task.deadline and not task.done and task.deadline < today %} is-late{% endif %}">{% if task.deadline %}Дедлайн · {{ task.deadline|date:"d.m.Y" }}{% else %}Без срока{% endif %}</span></div><h2>{{ task.title }}</h2><div class="my-task-bottom"><span class="task-state">{% if task.done %}Выполнена{% elif task.deadline %}В работе{% else %}В работе · срок не задан{% endif %}</span><a href="{{ task.get_absolute_url }}">Открыть задачу <span aria-hidden="true">↗</span></a></div></article>
+    {% empty %}<div class="public-empty"><span aria-hidden="true">✳</span><h2>Пока нет назначенных задач</h2><p>Когда вам назначат задачу, она появится здесь с отделом, подотделом и сроком.</p></div>{% endfor %}
+  </section>
+</div>{% endblock %}

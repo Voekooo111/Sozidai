@@ -1,0 +1,33 @@
+{% extends "core/sub_base.html" %}
+{% block sub_content %}
+<form class="card form-card" method="post" enctype="multipart/form-data" style="margin-left:0">
+  {% csrf_token %}
+  <h2 style="margin-bottom:22px">Новая задача</h2>
+  {% include "partials/field.html" with f=form.title %}
+  {% include "partials/field.html" with f=form.description %}
+  {% include "partials/field.html" with f=form.deadline %}
+  <div class="field">
+    <label>Ответственные</label>
+    <label class="chip select-all-department"><input type="checkbox" id="select-all-department"> Все из отдела</label>
+    <div class="chips" id="assignee-chips">{% for ch in form.assignees %}<label class="chip">{{ ch.tag }} {{ ch.choice_label }}</label>{% endfor %}</div>
+    {% for e in form.assignees.errors %}<p class="err">{{ e }}</p>{% endfor %}
+    <p class="help">За день до дедлайна напоминание получат только они.</p>
+  </div>
+  {% include "partials/field.html" with f=form.subtasks %}
+  <div class="field">
+    <label for="{{ form.image.id_for_label }}">Фото (необязательно)</label>
+    <input type="file" name="image" id="{{ form.image.id_for_label }}" accept="image/*" data-max-mb="{{ MAX_TASK_IMAGE_MB }}">
+    <p class="help">Не больше {{ MAX_TASK_IMAGE_MB }} МБ.</p>
+    {% for e in form.image.errors %}<p class="err">{{ e }}</p>{% endfor %}
+  </div>
+  <div class="task-foot"><button class="btn btn-mint">Создать задачу</button><a class="btn btn-ghost" href="{% url 'sub_tasks' sub.pk %}">Отмена</a></div>
+</form>
+<script>
+const selectAll = document.getElementById('select-all-department');
+const assignees = [...document.querySelectorAll('#assignee-chips input[type="checkbox"]')];
+selectAll?.addEventListener('change', () => assignees.forEach(input => input.checked = selectAll.checked));
+assignees.forEach(input => input.addEventListener('change', () => {
+  if (selectAll) selectAll.checked = assignees.length > 0 && assignees.every(item => item.checked);
+}));
+</script>
+{% endblock %}

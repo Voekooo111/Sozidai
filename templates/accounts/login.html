@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+{% block title %}Вход — {{ SITE_NAME }}{% endblock %}
+{% block content %}
+<div class="wrap page-pad">
+  <div class="auth">
+    <div class="auth-side"><h2>С возвращением</h2><p>Войдите, чтобы открыть чаты, задачи и дни рождения своих подотделов.</p></div>
+    <form class="auth-main" method="post">
+      {% csrf_token %}
+      <h2>Вход</h2>
+      {% for e in form.non_field_errors %}<p class="err" style="margin-bottom:14px">{{ e }}</p>{% endfor %}
+      {% include "partials/field.html" with f=form.username %}
+      {% include "partials/field.html" with f=form.password %}
+      <input type="hidden" name="next" value="{{ next }}">
+      <div class="task-foot"><button class="btn">Войти</button><a class="btn btn-ghost" href="{% url 'register' %}">Регистрация</a></div>
+    </form>
+  </div>
+</div>
+{% endblock %}

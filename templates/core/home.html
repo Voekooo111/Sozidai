@@ -1,0 +1,62 @@
+{% extends "base.html" %}
+{% block title %}{{ SITE_NAME }}{% endblock %}
+{% block content %}
+<section class="home-news"><div class="wrap">
+  <div class="home-news-head">
+    <div><span class="eyebrow">Созидай!</span><h1>Новости</h1></div>
+    {% if me.can_manage %}<a class="btn btn-ghost" href="{% url 'news_manage' %}">Управление новостями</a>{% endif %}
+  </div>
+  {% if news_list %}
+  <div class="news-carousel" data-news-carousel>
+    <button class="news-arrow news-arrow-prev" type="button" aria-label="Предыдущая новость" data-news-prev>
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m15 18-6-6 6-6"/></svg>
+    </button>
+    <div class="news-viewport" data-news-viewport tabindex="0" aria-label="Лента новостей. Используйте стрелки влево и вправо">
+      <div class="news-grid" data-news-track>
+        {% for news in news_list %}
+          <article class="card news-card" data-news-slide>
+            <a class="news-card-link" href="{% url 'news_detail' news.pk %}">
+              {% for photo in news.images.all %}{% if forloop.first %}<div class="news-image"><img src="{{ photo.image.url }}" alt="{{ news.title }}"></div>{% endif %}{% endfor %}
+              {% if not news.images.all and news.image %}<div class="news-image"><img src="{{ news.image.url }}" alt="{{ news.title }}"></div>{% endif %}
+              <div class="news-card-body">
+                <div class="news-card-meta"><span class="priority priority-{{ news.priority }}">{{ news.get_priority_display }}</span><time>{{ news.created_at|date:"d.m.Y" }}</time></div>
+                <h2>{{ news.title }}</h2>
+                <div class="news-preview">{{ news.content|truncatewords:40|urlize|linebreaks }}</div>
+                {% if news.delete_on %}<small class="news-expiry">Удаление: {{ news.delete_on|date:"d.m.Y" }}</small>{% endif %}
+                <span class="more">Читать новость <span aria-hidden="true">→</span></span>
+              </div>
+            </a>
+          </article>
+        {% endfor %}
+      </div>
+    </div>
+    <button class="news-arrow news-arrow-next" type="button" aria-label="Следующая новость" data-news-next>
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg>
+    </button>
+    <div class="news-carousel-footer">
+      <span class="news-position" aria-live="polite"><b data-news-current>1</b><span>/</span><span data-news-total>{{ news_list|length }}</span></span>
+      <div class="news-progress" aria-hidden="true"><i data-news-progress></i></div>
+      <span class="news-hint">Листайте новость вправо <span aria-hidden="true">→</span></span>
+    </div>
+  </div>
+  {% else %}
+    <div class="card empty"><h3>Пока новостей нет</h3><p>Здесь будут появляться важные материалы команды.</p></div>
+  {% endif %}
+</div></section>
+
+{% if user.is_authenticated %}
+<section class="band home-departments"><div class="wrap">
+  <div class="banner"><h2>Отделы</h2><p>Выберите отдел, чтобы открыть задачи, чаты.</p></div>
+  <div class="grid">
+    {% for d in departments %}
+      <a class="card tile" href="{% url 'department' d.slug %}">
+        <div class="ico">{{ d.emoji }}</div><h3>{{ d.name }}</h3><p>{{ d.description }}</p>
+        <span class="more">{% if d.slug == "common" %}Открыть задачи и чат{% else %}Открыть отдел ({{ d.n_subs }}){% endif %}</span>
+      </a>
+    {% empty %}
+      <div class="card empty" style="grid-column:1/-1"><h3>Пока нет доступных отделов</h3><p>Добавьте отделы и права доступа в коде проекта.</p></div>
+    {% endfor %}
+  </div>
+</div></section>
+{% endif %}
+{% endblock %}

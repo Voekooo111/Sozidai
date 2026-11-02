@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+{% block title %}Управление новостями — {{ SITE_NAME }}{% endblock %}
+{% block content %}
+<section class="page-pad"><div class="wrap news-page">
+  <div class="toolbar"><h1>Новости</h1><a class="btn" href="{% url 'news_create' %}">Создать новость</a></div>
+  <div class="news-list">
+    {% for item in news_list %}
+      <article class="card news-card">
+        <div class="news-meta">{{ item.created_at|date:"d.m.Y H:i" }} · Приоритет: {{ item.get_priority_display }} · {% if item.is_published %}Опубликована{% else %}Черновик{% endif %}{% if item.delete_on %} · Удаление: {{ item.delete_on|date:"d.m.Y" }}{% endif %}</div>
+        {% if item.image %}<img class="news-detail-image" src="{{ item.image.url }}" alt="">{% endif %}
+        {% for photo in item.images.all %}<img class="news-detail-image" src="{{ photo.image.url }}" alt="">{% endfor %}
+        <h3>{{ item.title }}</h3>
+        <div class="news-preview">{{ item.content|truncatewords:35|linebreaks }}</div>
+        <div class="news-actions">
+          <a class="btn btn-sm" href="{% url 'news_edit' item.pk %}">Редактировать</a>
+          {% if item.is_published %}<a class="btn btn-ghost btn-sm" href="{% url 'news_detail' item.pk %}">Открыть</a>{% endif %}
+          <form method="post" action="{% url 'news_toggle_publish' item.pk %}">{% csrf_token %}<button class="btn btn-sm {% if item.is_published %}btn-danger{% else %}btn-mint{% endif %}" type="submit">{% if item.is_published %}Снять с публикации{% else %}Опубликовать{% endif %}</button></form>
+          <form method="post" action="{% url 'news_delete' item.pk %}" onsubmit="return confirm('Удалить новость «{{ item.title|escapejs }}»? Это действие нельзя отменить.')">{% csrf_token %}<button class="btn btn-danger btn-sm" type="submit">Удалить</button></form>
+        </div>
+      </article>
+    {% empty %}
+      <div class="card empty"><h3>Новостей пока нет</h3><p>Создайте первую новость.</p></div>
+    {% endfor %}
+  </div>
+</div></section>
+{% endblock %}

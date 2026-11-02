@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+{% block title %}{{ dep.name }} — {{ SITE_NAME }}{% endblock %}
+{% block content %}
+<section class="band" style="padding-top:36px">
+  <div class="wrap">
+    <div class="crumbs"><a href="{% url 'home' %}">Главная</a> / <span>{{ dep.name }}</span></div>
+    <div class="banner" style="margin-top:18px"><h2>{{ dep.emoji }} {{ dep.name }}</h2>{% if dep.description %}<p>{{ dep.description }}</p>{% endif %}</div>
+    {% if can_manage_subdepartments %}<div class="department-manage-link"><a class="btn btn-ghost btn-sm" href="{% url 'department_subdepartments' dep.slug %}">Управление подотделами</a></div>{% endif %}
+    {% if is_common and global_room %}
+      <div class="global-department-actions">
+        <a class="card tile global-department-card" href="{% url 'sub_tasks' global_room.pk %}">
+          <div class="ico">✓</div><h3>Задачи</h3><p>Общий список задач для всех участников отдела.</p><span class="more">Открыть задачи{% if global_room.my_open %} · {{ global_room.my_open }} моих активных{% endif %}</span>
+        </a>
+        <a class="card tile global-department-card" href="{% url 'sub_chat' global_room.pk %}">
+          <div class="ico">💬</div><h3>Общий чат</h3><p>Одна беседа для всех участников организации.</p><span class="more">Открыть чат{% if global_room.unread %} · {{ global_room.unread }} новых{% endif %}</span>
+        </a>
+      </div>
+    {% else %}
+      <div class="grid">
+        {% for s in subs %}
+          <a class="card tile" href="{{ s.get_absolute_url }}">
+            <div class="pills">
+              {% if s.unread %}<span class="pill {% if s.muted %}grey{% endif %}">{{ s.unread }} нов.</span>{% endif %}
+              {% if s.my_open %}<span class="pill plain">задач: {{ s.my_open }}</span>{% endif %}
+            </div>
+            <div class="ico">{{ s.emoji }}</div><h3>{{ s.name }}</h3><p>{{ s.description }}</p><span class="more">Открыть</span>
+          </a>
+        {% empty %}
+          <div class="card empty" style="grid-column:1/-1"><h3>Подотделов пока нет</h3><p>Руководитель откроет вам доступ к подотделам.</p></div>
+        {% endfor %}
+      </div>
+    {% endif %}
+  </div>
+</section>
+{% endblock %}

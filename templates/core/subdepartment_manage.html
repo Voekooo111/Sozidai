@@ -1,0 +1,7 @@
+{% extends "base.html" %}
+{% block title %}Подотделы — {{ dep.name }}{% endblock %}
+{% block content %}<section class="page-pad"><div class="wrap news-page">
+  <div class="toolbar"><div><p class="eyebrow">{{ dep.name }}</p><h1>Подотделы</h1></div><a class="btn" href="{% url 'subdepartment_create' dep.slug %}">Создать подотдел</a></div>
+  <div class="grid">{% for sub in subdepartments %}<article class="card tile"><div class="ico">{{ sub.emoji }}</div><h3>{{ sub.name }}</h3><p>{{ sub.description }}</p><div class="task-foot"><a class="btn btn-sm" href="{% url 'subdepartment_edit' sub.pk %}">Изменить</a><a class="btn btn-ghost btn-sm" href="{% url 'subdepartment_delete' sub.pk %}">Удалить</a></div></article>{% empty %}<div class="card empty">Подотделов пока нет.</div>{% endfor %}</div>
+  <p class="help" style="margin-top:18px">У каждого подотдела автоматически появляются собственные задачи и чат.</p>
+</div></section>{% endblock %}

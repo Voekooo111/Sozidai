@@ -1,0 +1,4 @@
+{% extends "base.html" %}
+{% load static %}
+{% block page_styles %}<link rel="stylesheet" href="{% static 'core/css/public-pages.css' %}?v=1">{% endblock %}
+{% block content %}<div class="public-page">{% block public_content %}{% endblock %}</div>{% endblock %}

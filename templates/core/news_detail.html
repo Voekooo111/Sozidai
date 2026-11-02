@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+{% block title %}{{ news.title }} — {{ SITE_NAME }}{% endblock %}
+{% block content %}
+<section class="page-pad"><div class="wrap news-page">
+  <article class="card news-card">
+    <div class="news-meta">{{ news.created_at|date:"d.m.Y" }}</div>
+    <h1>{{ news.title }}</h1>
+    {% if news.images.all or news.image %}<section class="news-reader" data-photo-reader aria-label="Фотографии новости">
+      <div class="news-reader-stage">
+        {% if news.images.all %}{% for photo in news.images.all %}<img class="news-reader-photo{% if forloop.first %} is-active{% endif %}" src="{{ photo.image.url }}" alt="{{ news.title }} — фотография {{ forloop.counter }}" {% if not forloop.first %}hidden{% endif %}>{% endfor %}
+        {% else %}<img class="news-reader-photo is-active" src="{{ news.image.url }}" alt="{{ news.title }}">{% endif %}
+      </div>
+      {% if news.images.count > 1 %}<div class="news-reader-controls"><button type="button" data-photo-prev aria-label="Предыдущее фото">←</button><span><b data-photo-current>1</b> / {{ news.images.count }}</span><button type="button" data-photo-next aria-label="Следующее фото">→</button></div>{% endif %}
+    </section>{% endif %}
+    <div class="news-content">{{ news.content|urlize|linebreaks }}</div>
+    <a class="btn btn-ghost" href="{% url 'home' %}">На главную</a>
+  </article>
+</div></section>
+{% endblock %}

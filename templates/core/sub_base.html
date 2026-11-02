@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+{% block title %}{% if sub.department.slug == "common" %}{% if tab == "chat" %}Общий чат{% else %}Общие задачи{% endif %}{% else %}{{ sub.name }}{% endif %} — {{ SITE_NAME }}{% endblock %}
+{% block content %}
+<div class="wrap">
+  <div class="subhead">
+    <div class="crumbs"><a href="{% url 'home' %}">Главная</a> / <a href="{% url 'department' sub.department.slug %}">{{ sub.department.name }}</a>{% if sub.department.slug != "common" %} / <span>{{ sub.name }}</span>{% endif %}</div>
+    <h1>{% if sub.department.slug == "common" %}{% if tab == "chat" %}💬 Общий чат{% else %}🌐 Общие задачи{% endif %}{% else %}{{ sub.emoji }} {{ sub.name }}{% endif %}</h1>
+    <nav class="tabs" aria-label="Разделы отдела">
+      <a class="tab {% if tab == 'tasks' %}on{% endif %}" href="{% url 'sub_tasks' sub.pk %}">Задачи{% if open_tasks %}<small>{{ open_tasks }}</small>{% endif %}</a>
+      {% if sub.is_birthdays %}<a class="tab {% if tab == 'birthdays' %}on{% endif %}" href="{% url 'sub_birthdays' sub.pk %}">Дни рождения</a>{% endif %}
+      <a class="tab {% if tab == 'chat' %}on{% endif %}" href="{% url 'sub_chat' sub.pk %}">{% if sub.department.slug == "common" %}Общий чат{% else %}Чат{% endif %}</a>
+    </nav>
+  </div>
+  <div class="section">{% block sub_content %}{% endblock %}</div>
+</div>
+{% endblock %}

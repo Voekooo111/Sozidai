@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+{% block title %}{{ page_title }} — {{ SITE_NAME }}{% endblock %}
+{% block content %}
+<section class="page-pad subdepartment-page">
+  <div class="wrap">
+    <div class="crumbs"><a href="{% url 'home' %}">Главная</a> / <a href="{% url 'department' dep.slug %}">{{ dep.name }}</a> / <a href="{% url 'department_subdepartments' dep.slug %}">Подотделы</a> / <span>{{ page_title }}</span></div>
+    <header class="subdepartment-form-heading">
+      <p class="eyebrow">{{ dep.emoji }} {{ dep.name }}</p>
+      <h1>{{ page_title }}</h1>
+      <p class="lead">Настройте название и оформление. У подотдела будут свои задачи и чат.</p>
+    </header>
+    <form method="post" class="card form-card subdepartment-form">
+      {% csrf_token %}
+      <h2>Основная информация</h2>
+      {% include "partials/field.html" with f=form.name %}
+      {% include "partials/field.html" with f=form.slug %}
+      {% include "partials/field.html" with f=form.emoji %}
+      {% include "partials/field.html" with f=form.description %}
+      <p class="subdepartment-special-note">Дни рождения доступны только в одном специальном подотделе с точным названием «Дни рождения».</p>
+      <div class="task-foot subdepartment-form-actions">
+        <button class="btn btn-mint" type="submit">Сохранить подотдел</button>
+        <a class="btn btn-ghost" href="{% url 'department_subdepartments' dep.slug %}">Отмена</a>
+      </div>
+    </form>
+  </div>
+</section>
+{% endblock %}

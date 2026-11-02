@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+{% block title %}Регистрация — {{ SITE_NAME }}{% endblock %}
+{% block content %}
+<div class="wrap page-pad">
+  <div class="auth">
+    <div class="auth-side"><h2>Создайте аккаунт</h2><p>Укажите тот же Telegram-ник, который вы давали организаторам: ваши ФИО, отделы и подотделы подтянутся автоматически.</p></div>
+    <form class="auth-main" method="post">
+      {% csrf_token %}
+      <h2>Регистрация</h2>
+      {% include "partials/field.html" with f=form.username %}
+      {% include "partials/field.html" with f=form.tg_nick %}
+      {% include "partials/field.html" with f=form.email %}
+      {% include "partials/field.html" with f=form.birth_date %}
+      <p class="help registration-date-help">Дату рождения можно не указывать.</p>
+      {% include "partials/field.html" with f=form.password1 %}
+      {% include "partials/field.html" with f=form.password2 %}
+      <div class="field">
+        <label class="check"><input type="checkbox" name="agree_terms" {% if form.agree_terms.value %}checked{% endif %}><span>Я принимаю <a href="{% url 'agreement' %}" target="_blank" rel="noopener" style="color:var(--violet);text-decoration:underline">пользовательское соглашение</a></span></label>
+        {% for e in form.agree_terms.errors %}<p class="err">{{ e }}</p>{% endfor %}
+      </div>
+      <div class="field">
+        <label class="check"><input type="checkbox" name="agree_personal_data" {% if form.agree_personal_data.value %}checked{% endif %}><span>Даю согласие на обработку персональных данных по <a href="{% url 'personal_data_agreement' %}" target="_blank" rel="noopener" style="color:var(--violet);text-decoration:underline">отдельному соглашению</a>. <a href="{% url 'privacy_policy' %}" target="_blank" rel="noopener" style="color:var(--violet);text-decoration:underline">Политика конфиденциальности</a></span></label>
+        {% for e in form.agree_personal_data.errors %}<p class="err">{{ e }}</p>{% endfor %}
+      </div>
+      <div class="task-foot"><button class="btn btn-mint">Создать аккаунт</button><a class="btn btn-ghost" href="{% url 'login' %}">Уже есть аккаунт</a></div>
+    </form>
+  </div>
+</div>
+{% endblock %}

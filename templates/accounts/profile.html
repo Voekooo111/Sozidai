@@ -1,0 +1,51 @@
+{% extends "base.html" %}
+{% block title %}Профиль — {{ SITE_NAME }}{% endblock %}
+{% block content %}
+<div class="wrap page-pad profile-page">
+  <div class="profile-grid">
+    <aside class="card" style="text-align:center">
+      <img class="big-ava" id="avatar-preview" src="{{ me.avatar_url }}" alt="Аватар">
+      <h3>{{ me.name }}</h3>
+      <p class="help">{{ me.handle }} · {{ me.get_role_display }}{% if user.is_superuser %}, админ{% endif %}</p>
+      <form method="post" action="{% url 'logout' %}" style="margin-top:22px">{% csrf_token %}<button class="btn btn-danger btn-sm">Выйти из аккаунта</button></form>
+    </aside>
+    <div class="stack">
+      <form class="card" method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        <h2 style="margin-bottom:22px;font-size:1.6rem">Личные данные</h2>
+        <div class="field">
+          <label for="{{ pform.avatar.id_for_label }}">Аватар</label>
+          <input type="file" name="avatar" id="{{ pform.avatar.id_for_label }}" accept="image/*" data-max-mb="{{ MAX_AVATAR_MB }}" data-preview="#avatar-preview" data-avatar-crop>
+          <p class="help">{{ pform.avatar.help_text }}</p>
+          {% for e in pform.avatar.errors %}<p class="err">{{ e }}</p>{% endfor %}
+          <div class="avatar-crop-dialog" data-avatar-crop-dialog hidden>
+            <div class="avatar-crop-panel" role="dialog" aria-modal="true" aria-labelledby="avatar-crop-title">
+              <h2 id="avatar-crop-title">Настройте аватар</h2>
+              <p class="help">Перемещайте фотографию и изменяйте масштаб, чтобы выбрать область внутри круга.</p>
+              <canvas class="avatar-crop-canvas" data-avatar-canvas width="280" height="280" aria-label="Область обрезки фотографии"></canvas>
+              <label class="avatar-zoom">Масштаб <input type="range" min="1" max="3" step="0.01" value="1" data-avatar-zoom></label>
+              <div class="avatar-crop-actions"><button class="btn btn-ghost" type="button" data-avatar-cancel>Отмена</button><button class="btn btn-mint" type="button" data-avatar-apply>Выбрать эту область</button></div>
+            </div>
+          </div>
+          <label class="check" style="margin-top:8px"><input type="checkbox" name="remove_avatar"><span>Убрать аватар (будет серая картинка)</span></label>
+        </div>
+        {% include "partials/field.html" with f=pform.display_name %}
+        {% include "partials/field.html" with f=pform.tg_nick %}
+        {% include "partials/field.html" with f=pform.full_name %}
+        {% include "partials/field.html" with f=pform.birth_date %}
+        <button class="btn btn-mint">Сохранить</button>
+      </form>
+
+      <form class="card password-form" method="post" autocomplete="off" data-password-form>
+        {% csrf_token %}
+        <input type="hidden" name="form" value="password">
+        <h2 style="margin-bottom:22px;font-size:1.6rem">Сменить пароль</h2>
+        {% include "partials/field.html" with f=pwform.old_password %}
+        {% include "partials/field.html" with f=pwform.new_password1 %}
+        {% include "partials/field.html" with f=pwform.new_password2 %}
+        <button class="btn">Поменять пароль</button>
+      </form>
+    </div>
+  </div>
+</div>
+{% endblock %}

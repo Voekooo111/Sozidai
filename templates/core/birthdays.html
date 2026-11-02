@@ -1,0 +1,35 @@
+{% extends "core/sub_base.html" %}
+{% block sub_content %}
+{% if next %}
+<div class="next-bd">
+  <img src="{{ next.p.avatar_url }}" alt="">
+  <div>
+    <p>Ближайший день рождения</p>
+    <div class="when">{{ next.p.handle }}{% if next.p.full_name %}, {{ next.p.full_name }}{% endif %}</div>
+    <p>{% if next.days == 0 %}Сегодня!{% elif next.days == 1 %}Завтра,{% else %}Через {{ next.days }} дн.,{% endif %} {{ next.date|date:"j E" }}. Исполнится {{ next.turns }}.</p>
+  </div>
+</div>
+{% else %}
+<div class="card empty" style="margin-bottom:22px"><h3>Дат рождения пока нет</h3><p>Добавьте людей с датами рождения в админке.</p></div>
+{% endif %}
+
+<details class="bd">
+  <summary>Все дни рождения ({{ total }})</summary>
+  {% for rows in by_month %}
+  <div class="month">
+    <h3>{{ rows.0.date|date:"F" }}</h3>
+    {% for r in rows %}
+    <div class="bd-row">
+      <img src="{{ r.p.avatar_url }}" alt="">
+      <div><b>{{ r.p.handle }}</b>{% if r.p.full_name %}<div class="help">{{ r.p.full_name }}</div>{% endif %}</div>
+      <div class="d">{{ r.date|date:"j E" }}<small>{% if r.days == 0 %}сегодня{% elif r.days == 1 %}завтра{% else %}через {{ r.days }} дн.{% endif %}</small></div>
+    </div>
+    {% endfor %}
+  </div>
+  {% endfor %}
+</details>
+
+{% if responsible %}
+<p class="help" style="margin-top:18px">Напоминание в день рождения получают ответственные: {% for r in responsible %}{{ r.handle }}{% if not forloop.last %}, {% endif %}{% endfor %}.</p>
+{% endif %}
+{% endblock %}
